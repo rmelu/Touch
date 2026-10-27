@@ -28,15 +28,43 @@ export default function App() {
       setUnlocked(result.success);
       if (result.success) {
         await load();
+        setScreen('home');
       }
     } catch (error) {
       setUnlocked(false);
     }
   };
 
+  const [screen, setScreen] = useState('lock');
+
   useEffect(() => {
     unlock();
   }, []);
+
+  const renderScreen = () => {
+    switch (screen) {
+      case 'lock':
+        return (
+          <View style={styles.center}>
+            <Text style={styles.title}>DITO</Text>
+            <Text style={styles.hint}>Appoggia il dito per entrare</Text>
+            <Button title="Riprova" onPress={unlock} />
+            <StatusBar style="auto" />
+          </View>
+        );
+      case 'home':
+        return <HomeScreen />;
+      default:
+        return null;
+    }
+  };
+
+  return (
+    <View style={styles.container}>
+      {renderScreen()}
+    </View>
+  );
+};
 
   const persist = async (list) => {
     await SecureStore.setItemAsync(KEY, JSON.stringify(list));
