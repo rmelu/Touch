@@ -1,5 +1,0 @@
-app/services.js|Crea un file che esporta default un array SERVICES di oggetti {id, name} per Netflix, Gmail, Amazon, Disney+, Instagram, PayPal, Spotify.
-app/Tile.js|Crea un componente React Native Tile con props name e onPress. Mostra il nome e un Button con titolo ENTRA. Stile: card con bordo verde #0a6b45.
-app/Grid.js|Crea un componente Grid che importa SERVICES da ./services e Tile da ./Tile. Usa FlatList con numColumns 2 e una prop onEnter(service).
-app/vault.js|Crea funzioni async getEntry(id), saveEntry(id, email, password) e clearEntry(id) che usano expo-secure-store con chiave dito_ + id.
-app/App.js|Importa Grid da ./Grid. Dopo lo sblocco mostra <Grid onEnter={setSelected} /> invece della lista password. Aggiungi lo stato selected, inizialmente null.

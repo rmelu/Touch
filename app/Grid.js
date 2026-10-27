@@ -1,21 +1,17 @@
 import React from 'react';
-import { FlatList, View } from 'react-native';
+import { FlatList } from 'react-native';
 import Tile from './Tile';
-import * as SERVICES from './services';
+import SERVICES from './services';
 
-const Grid = ({ onEnter }) => {
-  const data = Object.values(SERVICES);
-
+export default function Grid({ onEnter }) {
   return (
     <FlatList
-      data={data}
+      data={SERVICES}
       numColumns={2}
+      keyExtractor={(item) => String(item.id)}
       renderItem={({ item }) => (
-        <Tile service={item} onEnter={onEnter} />
+        <Tile name={item.name} onPress={() => onEnter(item)} />
       )}
-      keyExtractor={(item, index) => index.toString()}
     />
   );
-};
-
-export default Grid;
+}

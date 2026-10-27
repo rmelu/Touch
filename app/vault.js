@@ -1,22 +1,23 @@
 import * as SecureStore from 'expo-secure-store';
 
 const KEY_PREFIX = 'dito_';
+const OPTIONS = {
+  requireAuthentication: true,
+  authenticationPrompt: 'Sblocca DITO',
+};
 
-async function getEntry(id) {
-  const key = KEY_PREFIX + id;
-  const value = await SecureStore.getItemAsync(key);
-  return value ? JSON.parse(value) : null;
+export async function getAccounts(id) {
+  const value = await SecureStore.getItemAsync(KEY_PREFIX + id, OPTIONS);
+  if (!value) return [];
+  const data = JSON.parse(value);
+  if (Array.isArray(data)) return data;
+  return [{ id: String(Date.now()), email: data.email, password: data.password }];
 }
 
-async function saveEntry(id, email, password) {
-  const key = KEY_PREFIX + id;
-  const value = JSON.stringify({ email, password });
-  await SecureStore.setItemAsync(key, value);
+export async function saveAccounts(id, list) {
+  await SecureStore.setItemAsync(KEY_PREFIX + id, JSON.stringify(list), OPTIONS);
 }
 
-async function clearEntry(id) {
-  const key = KEY_PREFIX + id;
-  await SecureStore.deleteItemAsync(key);
+export async function clearEntry(id) {
+  await SecureStore.deleteItemAsync(KEY_PREFIX + id);
 }
-
-export { getEntry, saveEntry, clearEntry };
