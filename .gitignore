@@ -1,1 +1,11 @@
+node_modules/
+.expo/
+dist/
 .aider*
+export.log
+*.bak
+build.sh
+fix.sh
+tasks.txt
+PIANO.md
+app/.claude/
