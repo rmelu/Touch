@@ -121,7 +121,18 @@ export default function App() {
       <Text style={styles.title}>DITO</Text>
 
       <Text style={styles.section}>Le tue password ({entries.length})</Text>
-      {entries.length === 0 && <Text style={styles.hint}>Ancora nessuna. Aggiungine una qui sotto.</Text>}
+      {entries.length === 0 && (
+        <View>
+          <Text style={styles.hint}>Ancora nessuna. Aggiungine una qui sotto.</Text>
+          <Text style={styles.label}>Nome del sito o dell'app</Text>
+          <TextInput style={styles.input} placeholder="es. Vodafone" value={site} onChangeText={setSite} />
+          <Text style={styles.label}>Email o nome utente</Text>
+          <TextInput style={styles.input} placeholder="es. nome@gmail.com" value={email} onChangeText={setEmail} autoCapitalize="none" keyboardType="email-address" />
+          <Text style={styles.label}>Password</Text>
+          <TextInput style={styles.input} placeholder="la password di quel sito" value={password} onChangeText={setPassword} secureTextEntry autoCapitalize="none" />
+          <Button title="Salva" onPress={add} />
+        </View>
+      )}
 
       {entries.map((e) => (
         <View key={e.id} style={styles.card}>
