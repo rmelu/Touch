@@ -1,0 +1,5 @@
+In app/App.js aggiungi una schermata home con una griglia 2 colonne di tessere: Netflix, Gmail, Amazon, Disney+, Instagram, PayPal, Spotify. Ogni tessera mostra il nome e un pulsante ENTRA.
+In app/App.js premendo ENTRA su una tessera chiama LocalAuthentication.authenticateAsync e se riesce mostra email e password salvate per quel servizio.
+In app/App.js se per quel servizio non c'è nessuna password salvata, mostra il form per inserirla la prima volta.
+In app/App.js salva ogni servizio in una chiave separata di SecureStore invece di una lista unica.
+In app/App.js dopo 30 secondi dalla copia svuota la clipboard con Clipboard.setStringAsync('').

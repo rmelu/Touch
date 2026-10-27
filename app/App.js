@@ -59,109 +59,98 @@ export default function App() {
     }
   };
 
-  return (
-    <View style={styles.container}>
-      {renderScreen()}
-    </View>
-  );
+const add = async () => {
+  if (!site || !email || !password) {
+    Alert.alert('Compila tutti i campi');
+    return;
+  }
+  const entry = { id: Date.now().toString(), site, email, password };
+  await persist([...entries, entry]);
+  setSite('');
+  setEmail('');
+  setPassword('');
 };
 
-  const persist = async (list) => {
-    await SecureStore.setItemAsync(KEY, JSON.stringify(list));
-    setEntries(list);
-  };
+const remove = (id) => {
+  Alert.alert('Eliminare?', 'Vuoi eliminare questa password?', [
+    { text: 'Annulla', style: 'cancel' },
+    {
+      text: 'Elimina',
+      style: 'destructive',
+      onPress: () => persist(entries.filter((e) => e.id !== id)),
+    },
+  ]);
+};
 
-  const add = async () => {
-    if (!site || !email || !password) {
-      Alert.alert('Compila tutti i campi');
-      return;
-    }
-    const entry = { id: Date.now().toString(), site, email, password };
-    await persist([...entries, entry]);
-    setSite('');
-    setEmail('');
-    setPassword('');
-  };
+const copy = async (pw) => {
+  await Clipboard.setStringAsync(pw);
+  Alert.alert('Copiata', "Ora incolla la password nell'app che stai aprendo.");
+};
 
-  const remove = (id) => {
-    Alert.alert('Eliminare?', 'Vuoi eliminare questa password?', [
-      { text: 'Annulla', style: 'cancel' },
-      {
-        text: 'Elimina',
-        style: 'destructive',
-        onPress: () => persist(entries.filter((e) => e.id !== id)),
-      },
-    ]);
-  };
+const lock = () => {
+  setUnlocked(false);
+  setEntries([]);
+  setVisibleId(null);
+};
 
-  const copy = async (pw) => {
-    await Clipboard.setStringAsync(pw);
-    Alert.alert('Copiata', "Ora incolla la password nell'app che stai aprendo.");
-  };
-
-  const lock = () => {
-    setUnlocked(false);
-    setEntries([]);
-    setVisibleId(null);
-  };
-
-  if (!unlocked) {
-    return (
-      <View style={styles.center}>
-        <Text style={styles.title}>DITO</Text>
-        <Text style={styles.hint}>Appoggia il dito per entrare</Text>
-        <Button title="Riprova" onPress={unlock} />
-        <StatusBar style="auto" />
-      </View>
-    );
-  }
-
+if (!unlocked) {
   return (
-    <ScrollView contentContainerStyle={styles.container}>
+    <View style={styles.center}>
       <Text style={styles.title}>DITO</Text>
-
-      <Text style={styles.section}>Le tue password ({entries.length})</Text>
-      {entries.length === 0 && (
-        <View>
-          <Text style={styles.hint}>Ancora nessuna. Aggiungine una qui sotto.</Text>
-          <Text style={styles.label}>Nome del sito o dell'app</Text>
-          <TextInput style={styles.input} placeholder="es. Vodafone" value={site} onChangeText={setSite} />
-          <Text style={styles.label}>Email o nome utente</Text>
-          <TextInput style={styles.input} placeholder="es. nome@gmail.com" value={email} onChangeText={setEmail} autoCapitalize="none" keyboardType="email-address" />
-          <Text style={styles.label}>Password</Text>
-          <TextInput style={styles.input} placeholder="la password di quel sito" value={password} onChangeText={setPassword} secureTextEntry autoCapitalize="none" />
-          <Button title="Salva" onPress={add} />
-        </View>
-      )}
-
-      {entries.map((e) => (
-        <View key={e.id} style={styles.card}>
-          <Text style={styles.cardTitle}>{e.site}</Text>
-          <Text>{e.email}</Text>
-          <Text style={styles.pw}>{visibleId === e.id ? e.password : '••••••••'}</Text>
-          <View style={styles.row}>
-            <Button title={visibleId === e.id ? 'Nascondi' : 'Mostra'} onPress={() => setVisibleId(visibleId === e.id ? null : e.id)} />
-            <Button title="Copia" onPress={() => copy(e.password)} />
-            <Button title="Elimina" color="#b00020" onPress={() => remove(e.id)} />
-          </View>
-        </View>
-      ))}
-
-      <Text style={styles.section}>Aggiungi una password</Text>
-      <Text style={styles.label}>Nome del sito o dell'app</Text>
-      <TextInput style={styles.input} placeholder="es. Vodafone" value={site} onChangeText={setSite} />
-      <Text style={styles.label}>Email o nome utente</Text>
-      <TextInput style={styles.input} placeholder="es. nome@gmail.com" value={email} onChangeText={setEmail} autoCapitalize="none" keyboardType="email-address" />
-      <Text style={styles.label}>Password</Text>
-      <TextInput style={styles.input} placeholder="la password di quel sito" value={password} onChangeText={setPassword} secureTextEntry autoCapitalize="none" />
-
-      <Button title="Salva" onPress={add} />
-      <View style={{ height: 16 }} />
-      <Button title="Blocca" onPress={lock} />
-      <View style={{ height: 40 }} />
+      <Text style={styles.hint}>Appoggia il dito per entrare</Text>
+      <Button title="Riprova" onPress={unlock} />
       <StatusBar style="auto" />
-    </ScrollView>
+    </View>
   );
+}
+
+return (
+  <ScrollView contentContainerStyle={styles.container}>
+    <Text style={styles.title}>DITO</Text>
+
+    <Text style={styles.section}>Le tue password ({entries.length})</Text>
+    {entries.length === 0 && (
+      <View>
+        <Text style={styles.hint}>Ancora nessuna. Aggiungine una qui sotto.</Text>
+        <Text style={styles.label}>Nome del sito o dell'app</Text>
+        <TextInput style={styles.input} placeholder="es. Vodafone" value={site} onChangeText={setSite} />
+        <Text style={styles.label}>Email o nome utente</Text>
+        <TextInput style={styles.input} placeholder="es. nome@gmail.com" value={email} onChangeText={setEmail} autoCapitalize="none" keyboardType="email-address" />
+        <Text style={styles.label}>Password</Text>
+        <TextInput style={styles.input} placeholder="la password di quel sito" value={password} onChangeText={setPassword} secureTextEntry autoCapitalize="none" />
+        <Button title="Salva" onPress={add} />
+      </View>
+    )}
+
+    {entries.map((e) => (
+      <View key={e.id} style={styles.card}>
+        <Text style={styles.cardTitle}>{e.site}</Text>
+        <Text>{e.email}</Text>
+        <Text style={styles.pw}>{visibleId === e.id ? e.password : '••••••••'}</Text>
+        <View style={styles.row}>
+          <Button title={visibleId === e.id ? 'Nascondi' : 'Mostra'} onPress={() => setVisibleId(visibleId === e.id ? null : e.id)} />
+          <Button title="Copia" onPress={() => copy(e.password)} />
+          <Button title="Elimina" color="#b00020" onPress={() => remove(e.id)} />
+        </View>
+      </View>
+    ))}
+
+    <Text style={styles.section}>Aggiungi una password</Text>
+    <Text style={styles.label}>Nome del sito o dell'app</Text>
+    <TextInput style={styles.input} placeholder="es. Vodafone" value={site} onChangeText={setSite} />
+    <Text style={styles.label}>Email o nome utente</Text>
+    <TextInput style={styles.input} placeholder="es. nome@gmail.com" value={email} onChangeText={setEmail} autoCapitalize="none" keyboardType="email-address" />
+    <Text style={styles.label}>Password</Text>
+    <TextInput style={styles.input} placeholder="la password di quel sito" value={password} onChangeText={setPassword} secureTextEntry autoCapitalize="none" />
+
+    <Button title="Salva" onPress={add} />
+    <View style={{ height: 16 }} />
+    <Button title="Blocca" onPress={lock} />
+    <View style={{ height: 40 }} />
+    <StatusBar style="auto" />
+  </ScrollView>
+);
+
 }
 
 const styles = StyleSheet.create({
