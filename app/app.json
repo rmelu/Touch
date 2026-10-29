@@ -22,7 +22,8 @@
     },
     "plugins": [
       "expo-secure-store",
-      "expo-status-bar"
+      "expo-status-bar",
+      ["expo-camera", { "cameraPermission": "DITO usa la fotocamera per proteggere l'accesso." }]
     ]
   }
 }

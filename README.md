@@ -19,12 +19,14 @@ Principi del progetto:
 - **Impronta digitale** per aprire l'app e per leggere i dati.
 - **Più account per servizio.** Puoi avere 5 email diverse su Gmail.
 - **Interfaccia semplice**, con pochi pulsanti e testi grandi.
+- **Intruder Selfie.** Se qualcuno sbaglia l'impronta, l'app scatta una foto con la fotocamera frontale e la salva solo sul telefono. Le foto si vedono in "Tentativi di accesso", si cancellano da sole dopo 7 giorni e si possono eliminare a mano.
 
 ## Come funziona
 
 - I dati sono salvati con `expo-secure-store`, cifrati dal sistema Android.
 - L'opzione `requireAuthentication` lega l'accesso ai dati alla biometria.
 - Una password si vede solo toccando "Mostra".
+- Le foto degli intrusi sono salvate nella memoria privata dell'app (`expo-file-system`) e non vengono mai inviate altrove.
 
 ## Requisiti
 
@@ -33,6 +35,10 @@ Principi del progetto:
   (questo progetto usa **Expo SDK 58**: l'SDK di Expo Go deve coincidere)
 - Un'**impronta digitale registrata** nel telefono
 - Computer e telefono con connessione internet
+- Una **fotocamera frontale** (opzionale, serve per Intruder Selfie) e il permesso camera concesso all'app
+- La funzione Intruder Selfie richiede una **build compilata**: in Expo Go la camera e i permessi possono non funzionare.
+
+**Privacy:** l'app scatta foto solo dopo un tentativo di accesso fallito e le foto restano sul dispositivo.
 
 Le librerie (Expo, React Native, expo-local-authentication, expo-secure-store...)
 sono elencate in `app/package.json` e si installano da sole con `npm install`.
@@ -64,13 +70,20 @@ Se computer e telefono sono sulla stessa rete Wi-Fi, puoi provare `--lan`
 
 ```
 app/
-  App.js            schermata principale, blocco con impronta
-  Grid.js           griglia dei servizi
-  Tile.js           un singolo riquadro con pulsante ENTRA
-  ServiceScreen.js  lista degli account di un servizio
-  services.js       elenco dei servizi (Netflix, Gmail...)
-  vault.js          lettura e scrittura cifrata dei dati
+  App.js              schermata principale, blocco con impronta
+  Grid.js             griglia dei servizi
+  Tile.js             un singolo riquadro con pulsante ENTRA
+  ServiceScreen.js    lista degli account di un servizio
+  services.js         elenco dei servizi (Netflix, Gmail...)
+  vault.js            lettura e scrittura cifrata dei dati
+  IntrudersScreen.js  elenco e cancellazione delle foto degli intrusi
 ```
+## Come è stato sviluppato
+
+Gran parte del codice è stata generata con **Aider** e il modello locale
+**Qwen2.5-Coder 7B** (eseguito con Ollama in Docker, quindi senza servizi cloud),
+poi rivista, corretta e modificata a mano dall'autore.
+Gli agenti non servono per usare l'app. Le istruzioni date all'agente sono in `AGENTS.md`.
 
 ## Stato del progetto
 
@@ -78,7 +91,7 @@ Touch è in sviluppo. Le funzioni principali (impronta, griglia, più account pe
 Ancora da completare:
 
 - **Backup e recupero cifrati**: per non perdere le password se si cambia o si rompe il telefono.
-- **Build compilata**: per verificare al 100% la protezione con impronta (Expo Go può ignorarla).
+- **Build compilata**: per verificare al 100% la protezione con impronta (Expo Go può ignorarla) e l'Intruder Selfie.
 - **Revisione di sicurezza** prima di un uso con password vere.
 
 Piattaforma attuale: Android.
@@ -87,6 +100,7 @@ Piattaforma attuale: Android.
 
 - [x] Griglia dei servizi con impronta
 - [x] Più account per servizio
+- [x] Intruder Selfie (codice integrato, da verificare su build compilata)
 - [ ] Backup cifrato nel cloud con password principale (recupero su un nuovo telefono)
 - [ ] Build compilata (development build) per verificare la biometria
 - [ ] Revisione di sicurezza
@@ -94,4 +108,4 @@ Piattaforma attuale: Android.
 
 ## Licenza
 
-Scegli una licenza prima di pubblicare (per esempio MIT).
+Distribuito con licenza MIT. Vedi il file `LICENSE`.
